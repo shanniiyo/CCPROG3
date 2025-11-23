@@ -1,0 +1,25 @@
+Sandwich,55.0,10,Food,Chef’s Choice,2025-10-30
+Ensaymada,35.0,10,Food,Red Ribbon,2025-09-15
+Fried Chicken,89.0,10,Food,Chef's Choice,2025-10-05
+Peanut Butter cups,45.0,10,Food,Reeses,2025-09-20
+Chips,125.0,1,Food,Lays,2025-08-15
+Water Bottle,25.0,10,Drinks,Nature’s Spring,2026-12-31
+Iced Coffee,65.0,10,Drinks,Great Taste,2026-11-10
+Soda,30.0,10,Drinks,Coca-Cola,2026-01-20
+Energy Drink,85.0,10,Drinks,Cobra,2026-09-30
+Beer Can,55.0,10,Drinks,San Miguel Pale Pilsen,2026-05-10
+Shampoo Sachet,7.0,10,Toiletries,Sunsilk,2026-12-31
+Bath Soap,36.0,10,Toiletries,Safeguard,2026-11-15
+Toothpaste,25.0,10,Toiletries,Colgate,2026-10-01
+Deodorant Roll-On,89.0,10,Toiletries,Rexona,2026-09-01
+Lotion,120.0,10,Toiletries,Vaseline,2026-08-15
+Laundry Detergent,75.0,10,Cleaning Products,Surf,2027-01-10
+Dishwashing Liquid,45.0,10,Cleaning Products,Joy,2026-09-20
+Bleach,38.0,10,Cleaning Products,Zonrox,2027-03-15
+Paper Towels,25.0,10,Cleaning Products,Sanicare,2027-05-01
+Hand Sanitizer,30.0,10,Cleaning Products,Green Cross,2026-12-20
+Paracetamol,8.0,10,Medications,Biogesic,2027-02-15
+Ibuprofen,10.0,10,Medications,Advil,2027-04-01
+Cough Syrup,95.0,10,Medications,Robitussin,2026-11-30
+Antacid Tablet,12.0,10,Medications,Kremil-S,2027-03-23
+Vitamin C Tablet,5.0,10,Medications,RiteMed,2027-06-01
