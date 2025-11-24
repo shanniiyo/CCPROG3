@@ -1,0 +1,25 @@
+FreshChoice Distributors|09123456789|Sandwich;Fried Chicken
+Red Ribbon Supply|09998887766|Ensaymada
+Chef’s Choice Supply|09187776655|Sandwich;Fried Chicken
+FritoLay Partners|09181112222|Chips
+Reeses Supplier Co|09185554444|Peanut Butter cups
+NatureSpring Logistics|09224446655|Water Bottles
+Great Taste Provider|09997773322|Iced Coffee
+CocaCola Beverages|09081234567|Soda
+Cobra Energy Logistics|09175551234|Energy Drink
+SanMiguel Distributor|09182223344|Beer Can
+Sunsilk Grooming Supply|09176665555|Shampoo Sachet
+Safeguard Hygiene Partner|09191234567|Bath Soap
+Colgate Toothcare Supply|09992221111|Toothpaste
+Rexona Hygiene Supply|09178889999|Deodorant Roll-On
+Vaseline Cosmetics Supply|09334445566|Lotion
+Surf Cleaning Logistics|09179997777|Laundry Detergent
+Joy Dish Supply|09093334444|Dishwashing Liquid
+Zonrox Cleaners|09229998888|Bleach
+Sanicare Paper Goods|09227776655|Paper Towels
+Green Cross Medical|09092223344|Hand Sanitizer
+Biogesic Pharma|09150001111|Paracetamol
+Advil Pharmaceuticals|09223334444|Ibuprofen
+Robitussin MedSupply|09226665555|Cough Syrup
+Kremil-S Distributor|09171118888|Antacid Tablet
+RiteMed Vitamins|09998880000|Vitamin C Tablet
