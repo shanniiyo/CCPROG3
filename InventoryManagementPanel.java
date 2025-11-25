@@ -2,10 +2,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
-import model.Inventory;
-import model.Product;
-import model.Category;
-
 public class InventoryManagementPanel extends JPanel {
 
     private MainFrame frame;
@@ -20,45 +16,41 @@ public class InventoryManagementPanel extends JPanel {
 
         table = new JTable();
         refreshTable();
-
         add(new JScrollPane(table), BorderLayout.CENTER);
 
         JPanel bottom = new JPanel();
 
         JButton addBtn = new JButton("Add Product");
         JButton restockBtn = new JButton("Restock");
-        JButton editBtn = new JButton("Edit");
         JButton deleteBtn = new JButton("Delete");
         JButton backBtn = new JButton("Back");
 
         addBtn.addActionListener(e -> addProduct());
         restockBtn.addActionListener(e -> restock());
-        editBtn.addActionListener(e -> edit());
         deleteBtn.addActionListener(e -> delete());
         backBtn.addActionListener(e -> frame.showPage("catalog"));
 
         bottom.add(addBtn);
         bottom.add(restockBtn);
-        bottom.add(editBtn);
         bottom.add(deleteBtn);
         bottom.add(backBtn);
 
         add(bottom, BorderLayout.SOUTH);
     }
 
-    private void refreshTable() {
+    public void refreshTable() {
 
         DefaultTableModel model = new DefaultTableModel(
-                new String[]{"Name", "Price", "Qty", "Category", "Brand"}, 0);
+                new String[]{"Name", "Price", "Qty", "Category", "Brand", "Expiry"}, 0);
 
-        
         for (Product p : inventory.getProducts()) {
             model.addRow(new Object[]{
                     p.getName(),
                     p.getPrice(),
                     p.getQuantity(),
                     p.getCategory().getName(),
-                    p.getBrand()
+                    p.getBrand(),
+                    p.getExpiryDate()
             });
         }
 
@@ -67,17 +59,22 @@ public class InventoryManagementPanel extends JPanel {
 
     private void addProduct() {
         try {
-            String name = JOptionPane.showInputDialog("Name:");
-            double price = Double.parseDouble(JOptionPane.showInputDialog("Price:"));
-            int qty = Integer.parseInt(JOptionPane.showInputDialog("Quantity:"));
-            String category = JOptionPane.showInputDialog("Category:");
-            String brand = JOptionPane.showInputDialog("Brand:");
-            String expiry = JOptionPane.showInputDialog("Expiry Date (YYYY-MM-DD):");
+            String name = JOptionPane.showInputDialog("Enter Product Name:");
+            if (name == null || name.isEmpty()) return;
+
+            double price = Double.parseDouble(JOptionPane.showInputDialog("Enter Price:"));
+            int qty = Integer.parseInt(JOptionPane.showInputDialog("Enter Initial Quantity:"));
+            String category = JOptionPane.showInputDialog("Enter Category:");
+            String brand = JOptionPane.showInputDialog("Enter Brand:");
+            String expiry = JOptionPane.showInputDialog("Enter Expiry Date (YYYY-MM-DD):");
 
             Product p = new Product(name, price, qty, new Category(category), brand, expiry);
             inventory.addProduct(p);
             inventory.saveProductsToFile();
             refreshTable();
+
+            JOptionPane.showMessageDialog(this, "Product added successfully!");
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Invalid input.");
         }
@@ -85,45 +82,51 @@ public class InventoryManagementPanel extends JPanel {
 
     private void restock() {
         int row = table.getSelectedRow();
-        if (row == -1) return;
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this, "Select a product to restock.");
+            return;
+        }
 
         String name = table.getValueAt(row, 0).toString();
-        String qtyStr = JOptionPane.showInputDialog("Add quantity:");
+        String qtyStr = JOptionPane.showInputDialog("Enter quantity to add:");
+        if (qtyStr == null) return;
 
         try {
             int qty = Integer.parseInt(qtyStr);
+            if (qty <= 0) {
+                JOptionPane.showMessageDialog(this, "Quantity must be positive.");
+                return;
+            }
+
             inventory.restockProduct(name, qty);
             inventory.saveProductsToFile();
             refreshTable();
+
+            JOptionPane.showMessageDialog(this, "Restocked successfully!");
+
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Invalid qty.");
+            JOptionPane.showMessageDialog(this, "Invalid quantity.");
         }
-    }
-
-    private void edit() {
-        int row = table.getSelectedRow();
-        if (row == -1) return;
-
-        String name = table.getValueAt(row, 0).toString();
-        Product p = inventory.findProductByName(name).orElse(null);
-
-        if (p == null) return;
-
-        String newPriceStr = JOptionPane.showInputDialog("New price:", p.getPrice());
-        double newPrice = Double.parseDouble(newPriceStr);
-
-        p.setPrice(newPrice);
-        inventory.saveProductsToFile();
-        refreshTable();
     }
 
     private void delete() {
         int row = table.getSelectedRow();
-        if (row == -1) return;
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this, "Select a product to delete.");
+            return;
+        }
 
         String name = table.getValueAt(row, 0).toString();
+
+        int confirm = JOptionPane.showConfirmDialog(
+                this, "Delete " + name + " ?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
+
+        if (confirm != JOptionPane.YES_OPTION) return;
+
         inventory.getProducts().removeIf(p -> p.getName().equalsIgnoreCase(name));
         inventory.saveProductsToFile();
         refreshTable();
+
+        JOptionPane.showMessageDialog(this, "Product deleted.");
     }
 }

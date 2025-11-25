@@ -1,13 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
 import java.util.Map;
 
-import model.Inventory;
-import model.Cart;
-import model.LoyaltyCard;
-
-
 public class MainFrame extends JFrame {
+
     private CardLayout cardLayout;
     private JPanel mainPanel;
 
@@ -15,6 +12,8 @@ public class MainFrame extends JFrame {
     private Cart cart;
     private Map<String, LoyaltyCard> loyaltyCards;
 
+    // Stores panels by name for fast lookup
+    private Map<String, JPanel> panelMap = new HashMap<>();
 
     public MainFrame(Inventory inventory, Cart cart, Map<String, LoyaltyCard> loyaltyCards) {
 
@@ -25,22 +24,62 @@ public class MainFrame extends JFrame {
         setTitle("Convenience Store POS System");
         setSize(1100, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
 
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
 
-        mainPanel.add(new ProductCatalogPanel(this, inventory, cart), "catalog");
-        mainPanel.add(new ShoppingCartPanel(this, inventory, cart), "cart");
-        mainPanel.add(new CheckoutPanel(this, inventory, cart, loyaltyCards), "checkout");
-        mainPanel.add(new InventoryManagementPanel(this, inventory), "inventory");
+        // Create panels
+        ProductCatalogPanel catalogPanel = new ProductCatalogPanel(this, inventory, cart);
+        ShoppingCartPanel cartPanel = new ShoppingCartPanel(this, inventory, cart);
+        CheckoutPanel checkoutPanel = new CheckoutPanel(this, inventory, cart, loyaltyCards);
+        InventoryManagementPanel inventoryPanel = new InventoryManagementPanel(this, inventory);
+
+        // Store panels in map
+        panelMap.put("catalog", catalogPanel);
+        panelMap.put("cart", cartPanel);
+        panelMap.put("checkout", checkoutPanel);
+        panelMap.put("inventory", inventoryPanel);
+
+        // Add panels to card layout
+        mainPanel.add(catalogPanel, "catalog");
+        mainPanel.add(cartPanel, "cart");
+        mainPanel.add(checkoutPanel, "checkout");
+        mainPanel.add(inventoryPanel, "inventory");
 
         add(mainPanel);
-        setLocationRelativeTo(null);
         setVisible(true);
     }
-       
-    public void showPage(String name) {
-        cardLayout.show(mainPanel, name);
+
+   
+     //Safe panel lookup
+    private JPanel findPanel(String name) {
+        return panelMap.get(name);
     }
 
+    
+     // Switches pages & auto-refreshes the correct panels
+    public void showPage(String name) {
+
+        // Refresh dynamic panels before showing them
+        switch (name) {
+            case "catalog":
+                ((ProductCatalogPanel) findPanel("catalog")).refreshTable();
+                break;
+
+            case "cart":
+                ((ShoppingCartPanel) findPanel("cart")).refreshTable();
+                break;
+
+            case "inventory":
+                ((InventoryManagementPanel) findPanel("inventory")).refreshTable();
+                break;
+
+            case "checkout":
+                // checkout recalculates totals dynamically if needed
+                break;
+        }
+
+        cardLayout.show(mainPanel, name);
+    }
 }

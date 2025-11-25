@@ -1,7 +1,10 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-
+/*import model.Inventory;
+import model.Cart;
+import model.Product;
+*/
 public class ShoppingCartPanel extends JPanel {
 
     private MainFrame frame;
@@ -42,6 +45,7 @@ public class ShoppingCartPanel extends JPanel {
     }
 
     public void refreshTable() {
+
         DefaultTableModel model = new DefaultTableModel(
                 new String[]{"Product", "Qty", "Price", "Total"}, 0
         );
@@ -49,13 +53,12 @@ public class ShoppingCartPanel extends JPanel {
         for (int i = 0; i < cart.getItems().size(); i++) {
             Product p = cart.getItems().get(i);
             int qty = cart.getQuantities().get(i);
-            double total = p.getPrice() * qty;
 
             model.addRow(new Object[]{
                     p.getName(),
                     qty,
                     p.getPrice(),
-                    total
+                    p.getPrice() * qty
             });
         }
 
@@ -78,12 +81,21 @@ public class ShoppingCartPanel extends JPanel {
         String name = table.getValueAt(row, 0).toString();
         String newQtyStr = JOptionPane.showInputDialog("Enter new quantity:");
 
+        if (newQtyStr == null) return;
+
         try {
             int newQty = Integer.parseInt(newQtyStr);
+
+            if (newQty <= 0) {
+                JOptionPane.showMessageDialog(this, "Invalid qty.");
+                return;
+            }
+
             cart.updateQuantity(name, newQty);
+
             refreshTable();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Invalid quantity.");
+            JOptionPane.showMessageDialog(this, "Invalid qty.");
         }
     }
 }
