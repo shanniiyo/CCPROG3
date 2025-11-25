@@ -23,8 +23,12 @@ public class Receipt {
     private double seniorDiscount;
     private double loyaltyDiscount;
     private LocalDateTime transactionDate;
+    private String fileName;
 
-    public Receipt(Customer customer, Cart cart, double paymentAmount, double totalAmount, double change, double subtotal, double vat, double seniorDiscount, double loyaltyDiscount) {
+    public Receipt(Customer customer, Cart cart, double paymentAmount, double totalAmount,
+                   double change, double subtotal, double vat,
+                   double seniorDiscount, double loyaltyDiscount) {
+
         this.customer = customer;
         this.cart = cart;
         this.paymentAmount = paymentAmount;
@@ -35,95 +39,59 @@ public class Receipt {
         this.seniorDiscount = seniorDiscount;
         this.loyaltyDiscount = loyaltyDiscount;
         this.transactionDate = LocalDateTime.now();
+
+        this.fileName = "receipt_" +
+                customer.getName().replaceAll("\\s+", "_") + "_" +
+                transactionDate.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) +
+                ".txt";
     }
 
-    public void printReceipt() {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        String filename = "receipt_" + customer.getName().replaceAll("\\s+", "_") + "_" + transactionDate.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) + ".txt";
+    /**
+     * Return a nicely formatted receipt string (for display in GUI).
+     */
+    public String getFormattedReceipt() {
+        StringBuilder sb = new StringBuilder();
 
-        try (FileWriter writer = new FileWriter(filename)) {
-            String header = "--- OFFICIAL RECEIPT ---\n";
-            writer.write(header);
-            System.out.print(header);
+        sb.append("--- OFFICIAL RECEIPT ---\n");
+        sb.append("Date: ").append(transactionDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"))).append("\n");
+        sb.append("Customer: ").append(customer.getName()).append("\n\n");
+        sb.append(String.format("%-20s %5s %10s %10s\n", "Item", "Qty", "Price", "Total"));
 
-            String date = "Date: " + dtf.format(transactionDate) + "\n";
-            writer.write(date);
-            System.out.print(date);
+        for (int i = 0; i < cart.getItems().size(); i++) {
+            Product p = cart.getItems().get(i);
+            int qty = cart.getQuantities().get(i);
+            double itemTotal = p.getPrice() * qty;
 
-            String custInfo = "Customer: " + customer.getName() + "\n\n";
-            writer.write(custInfo);
-            System.out.print(custInfo);
+            sb.append(String.format("%-20s %5d %10.2f %10.2f\n", p.getName(), qty, p.getPrice(), itemTotal));
+        }
 
-            String itemsHeader = String.format("%-20s %5s %10s %10s\n", "Item", "Qty", "Price", "Total");
-            writer.write(itemsHeader);
-            System.out.print(itemsHeader);
+        sb.append("\n");
+        sb.append(String.format("%-35s %10.2f\n", "Subtotal:", subtotal));
+        if (vat > 0) sb.append(String.format("%-35s %10.2f\n", "VAT:", vat));
+        if (seniorDiscount > 0) sb.append(String.format("%-35s %10.2f\n", "Senior Discount:", -seniorDiscount));
+        if (loyaltyDiscount > 0) sb.append(String.format("%-35s %10.2f\n", "Loyalty Discount:", -loyaltyDiscount));
+        sb.append("----------------------------------------\n");
+        sb.append(String.format("%-35s %10.2f\n", "TOTAL:", totalAmount));
+        sb.append(String.format("%-35s %10.2f\n", "Paid:", paymentAmount));
+        sb.append(String.format("%-35s %10.2f\n", "Change:", change));
+        sb.append("----------------------------------------\n");
+        sb.append("Thank you for your purchase!\n");
 
-            // Access cart via getters
-            for (int i = 0; i < cart.getTotalItems(); i++) {
-                Product p = cart.getItems().get(i);
-                int qty = cart.getQuantities().get(i);
-                double itemTotal = p.getPrice() * qty;
-                String itemLine = String.format("%-20s %5d %10.2f %10.2f\n", p.getName(), qty, p.getPrice(), itemTotal);
-                writer.write(itemLine);
-                System.out.print(itemLine);
-            }
+        return sb.toString();
+    }
 
-            writer.write("\n");
-            System.out.print("\n");
-
-            String subtotalLine = String.format("%-35s %10.2f\n", "Subtotal:", this.subtotal);
-            writer.write(subtotalLine);
-            System.out.print(subtotalLine);
-
-            if (this.vat > 0) {
-                String vatLine = String.format("%-35s %10.2f\n", "VAT (12%):", this.vat);
-                writer.write(vatLine);
-                System.out.print(vatLine);
-            }
-
-            if (this.seniorDiscount > 0) {
-                String seniorLine = String.format("%-35s %10.2f\n", "Senior Citizen Discount (20%):", -this.seniorDiscount);
-                writer.write(seniorLine);
-                System.out.print(seniorLine);
-            }
-
-            if (this.loyaltyDiscount > 0) {
-                String loyaltyLine = String.format("%-35s %10.2f\n", "Loyalty Points Redeemed:", -this.loyaltyDiscount);
-                writer.write(loyaltyLine);
-                System.out.print(loyaltyLine);
-            }
-
-            writer.write("----------------------------------------\n");
-            System.out.print("----------------------------------------\n");
-
-            String totalLine = String.format("%-35s %10.2f\n", "TOTAL:", totalAmount);
-            writer.write(totalLine);
-            System.out.print(totalLine);
-
-            String paidLine = String.format("%-35s %10.2f\n", "Paid:", paymentAmount);
-            writer.write(paidLine);
-            System.out.print(paidLine);
-
-            String changeLine = String.format("%-35s %10.2f\n", "Change:", change);
-            writer.write(changeLine);
-            System.out.print(changeLine);
-
-            writer.write("----------------------------------------\n");
-            System.out.print("----------------------------------------\n");
-
-            String footer = "Thank you for your purchase!\n";
-            writer.write(footer);
-            System.out.print(footer);
-
-            System.out.println("Receipt saved to file: " + filename);
+    /**
+     * Save receipt text to a file with timestamped fileName.
+     */
+    public void saveToFile() {
+        try (FileWriter writer = new FileWriter(fileName)) {
+            writer.write(getFormattedReceipt());
         } catch (IOException e) {
-            System.out.println("Error saving receipt to file.");
             e.printStackTrace();
         }
+    }
 
-        // Add loyalty points if available
-        if (customer.getLoyaltyCard() != null) {
-            customer.getLoyaltyCard().addPoints(totalAmount);
-        }
+    public String getFileName() {
+        return fileName;
     }
 }
