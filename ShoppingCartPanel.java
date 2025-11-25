@@ -4,10 +4,10 @@ import java.awt.*;
 
 public class ShoppingCartPanel extends JPanel {
 
-    private StoreGUI frame;
-    private Inventory inventory;
-    private Cart cart;
-    private JTable table;
+    private StoreGUI frame; //Reference to main GUI
+    private Inventory inventory;    //Store inventory    
+    private Cart cart;       //customer's shopping cart
+    private JTable table;    //Table that displays cart items
 
     public ShoppingCartPanel(StoreGUI frame, Inventory inventory, Cart cart) {
         this.frame = frame;
@@ -15,18 +15,18 @@ public class ShoppingCartPanel extends JPanel {
         this.cart = cart;
 
         setLayout(new BorderLayout());
-
+        //Table showing items in the cart
         table = new JTable();
-        refreshTable();
+        refreshTable(); //loads initial cart data
         add(new JScrollPane(table), BorderLayout.CENTER);
-
+        //Panel for action button
         JPanel bottom = new JPanel();
 
         JButton removeBtn = new JButton("Remove Item");
         JButton updateBtn = new JButton("Update Quantity");
         JButton checkoutBtn = new JButton("Checkout");
         JButton backBtn = new JButton("Back");
-
+        //Removes selected items
         removeBtn.addActionListener(e -> {
             int row = table.getSelectedRow();
             if (row == -1) return;
@@ -34,7 +34,7 @@ public class ShoppingCartPanel extends JPanel {
             cart.removeItem(name);
             refreshTable();
         });
-
+    //Updates the quantity of selected item
         updateBtn.addActionListener(e -> {
             int row = table.getSelectedRow();
             if (row == -1) return;
@@ -49,10 +49,10 @@ public class ShoppingCartPanel extends JPanel {
                 JOptionPane.showMessageDialog(this, "Invalid quantity.");
             }
         });
-
+        //Goes to checkout page
         checkoutBtn.addActionListener(e -> frame.showPage("Checkout"));
-        backBtn.addActionListener(e -> frame.showPage("Catalog"));
-
+        backBtn.addActionListener(e -> frame.showPage("Catalog"));//Return to product catalog page
+        //Adds all buttons to bottom panel
         bottom.add(removeBtn);
         bottom.add(updateBtn);
         bottom.add(checkoutBtn);
@@ -66,8 +66,9 @@ public class ShoppingCartPanel extends JPanel {
         for (int i = 0; i < cart.getItems().size(); i++) {
             Product p = cart.getItems().get(i);
             int qty = cart.getQuantities().get(i);
-            model.addRow(new Object[]{p.getName(), qty, p.getPrice(), p.getPrice() * qty});
+            model.addRow(new Object[]{p.getName(), qty, p.getPrice(), p.getPrice() * qty});//Add row to table
         }
         table.setModel(model);
     }
 }
+
