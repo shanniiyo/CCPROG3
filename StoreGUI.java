@@ -16,6 +16,13 @@ public class StoreGUI extends JFrame {
     private List<Category> categories;
     private Map<String, LoyaltyCard> loyaltyCards;
 
+    //Transaction GUI components
+    private Cart cart;
+    private ProductCatalogPanel catalogPanel;
+    private ShoppingCartPanel cartPanel;
+    private CheckoutPanel checkoutPanel;
+    private ReceiptPanel receiptPanel;
+
     public StoreGUI() {
         // 1. Load Data
          categories = new ArrayList<>(); // You might want to load these from a file too
@@ -42,11 +49,24 @@ public class StoreGUI extends JFrame {
         JPanel inventoryPanel = createInventoryPanel(); // Create the new panel
         // JPanel transactionPanel = createTransactionPanel();
 
+        //Transaction Panels
+        cart = new Cart();
+        catalogPanel = new ProductCatalogPanel(this, inventory, cart);
+        cartPanel = new ShoppingCartPanel(this, inventory, cart);
+        checkoutPanel = new CheckoutPanel(this, inventory, cart);
+
+
         // 5. Add panels to the main container
         mainPanel.add(mainMenuPanel, "MainMenu");
         mainPanel.add(inventoryPanel, "Inventory"); // Add it to the CardLayout
         // mainPanel.add(transactionPanel, "Transaction");
 
+        //Transaction Panels to GUI
+        mainPanel.add(catalogPanel, "Catalog");
+        mainPanel.add(cartPanel, "Cart");
+        mainPanel.add(checkoutPanel, "Checkout");
+        // ReceiptPanel will be created dynamically after payment
+        
 
         // 6. Add the main panel to the frame
         add(mainPanel);
@@ -83,7 +103,9 @@ public class StoreGUI extends JFrame {
         JButton transactionButton = new JButton("Customer Transaction");
         transactionButton.addActionListener(e -> {
             // This will eventually switch to the transaction panel
-            JOptionPane.showMessageDialog(this, "Customer Transaction coming soon!");
+            //Open Transaction Process Here
+            cardLayout.show(mainPanel, "Catalog");
+            catalogPanel.refreshTable();
             // cardLayout.show(mainPanel, "Transaction");
 });
         gbc.gridy = 2;
@@ -259,7 +281,27 @@ public class StoreGUI extends JFrame {
 
         return panel;
     }
+    //Switch Panels & Refresh
+    public void showPage(String name) {
+        cardLayout.show(mainPanel, name);
 
+        if (name.equals("Catalog")) catalogPanel.refreshTable();
+        else if (name.equals("Cart")) cartPanel.refreshTable();
+    }
+
+    //Show Receipt Panel after payment
+    public void showReceiptPanel(Receipt receipt, double change) {
+        if (receiptPanel != null) {
+            mainPanel.remove(receiptPanel);
+        }
+        receiptPanel = new ReceiptPanel(this, receipt, change);
+        mainPanel.add(receiptPanel, "Receipt");
+
+        mainPanel.revalidate();
+        mainPanel.repaint();
+
+        cardLayout.show(mainPanel, "Receipt");
+    }
     public static void main(String[] args) {
         // Ensure the GUI is created on the Event Dispatch Thread
         SwingUtilities.invokeLater(() -> {
