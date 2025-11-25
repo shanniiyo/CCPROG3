@@ -19,11 +19,12 @@ public class StoreGUI extends JFrame {
     public StoreGUI() {
         // 1. Load Data
          categories = new ArrayList<>(); // You might want to load these from a file too
-    inventory = new Inventory("products.txt", categories);
-    loyaltyCards = LoyaltyCard.loadLoyaltyCards("loyalty_cards.txt");
-    if (loyaltyCards == null) {
-        loyaltyCards = new HashMap<>();
-    }
+        inventory = new Inventory("products.txt", categories);
+        loyaltyCards = LoyaltyCard.loadLoyaltyCards("loyalty_cards.txt");
+        if (loyaltyCards == null) 
+        {
+            loyaltyCards = new HashMap<>();
+        }
 
 
         // 2. Setup the main frame
@@ -54,6 +55,12 @@ public class StoreGUI extends JFrame {
         cardLayout.show(mainPanel, "MainMenu");
     }
 
+    /**
+     * Creates and configures the main menu panel for the application.
+     * This panel serves as the central navigation point, providing buttons
+     * to access different inventory management and customer transactions, 
+     * and option to exit the application.
+     */
     private JPanel createMainMenuPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -90,6 +97,12 @@ public class StoreGUI extends JFrame {
         return panel;
     }
 
+    /**
+     * Creates the inventory management panel.
+     * Displays a list of all products from the inventory.
+     * Controls for adding a new product, restocking an existing product,
+     * and returning to the main menu. 
+     */
     private JPanel createInventoryPanel() {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -100,7 +113,7 @@ public class StoreGUI extends JFrame {
         panel.add(titleLabel, BorderLayout.NORTH);
 
         // Table to display products
-        String[] columnNames = {"Name", "Price", "Category", "Stock"};
+        String[] columnNames = {"Name", "Price", "Category", "Stock", "Brand", "Expiry Date"};
         DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
         JTable productTable = new JTable(tableModel);
 
@@ -111,7 +124,9 @@ public class StoreGUI extends JFrame {
                     product.getName(),
                     String.format("%.2f", product.getPrice()),
                     product.getCategory().getName(),
-                    product.getQuantity()
+                    product.getQuantity(),
+                    product.getBrand(),
+                    product.getExpiryDate()
                 };
                 tableModel.addRow(row);
             }
@@ -121,6 +136,80 @@ public class StoreGUI extends JFrame {
 
         // Bottom panel for buttons
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+
+        JButton addButton = new JButton("Add New Product");
+        addButton.addActionListener(e -> {
+            // Create a panel for the dialog with fields for the new product
+            JPanel addProductPanel = new JPanel(new GridLayout(0, 2, 5, 5));
+            JTextField nameField = new JTextField();
+            JTextField priceField = new JTextField();
+            JTextField quantityField = new JTextField();
+            JTextField categoryField = new JTextField();
+            JTextField brandField = new JTextField();
+            JTextField expiryDateField = new JTextField();
+
+            addProductPanel.add(new JLabel("Name:"));
+            addProductPanel.add(nameField);
+            addProductPanel.add(new JLabel("Price:"));
+            addProductPanel.add(priceField);
+            addProductPanel.add(new JLabel("Category:"));
+            addProductPanel.add(categoryField);
+            addProductPanel.add(new JLabel("Brand:"));
+            addProductPanel.add(brandField);
+            addProductPanel.add(new JLabel("Initial Stock:"));
+            addProductPanel.add(quantityField);
+            addProductPanel.add(new JLabel("Expiry Date (YYYY-MM-DD):"));
+            addProductPanel.add(expiryDateField);
+
+            int result = JOptionPane.showConfirmDialog(panel, addProductPanel, "Add New Product", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+            if (result == JOptionPane.OK_OPTION) {
+                try {
+                    String name = nameField.getText();
+                    double price = Double.parseDouble(priceField.getText());
+                    String categoryName = categoryField.getText();
+                    int quantity = Integer.parseInt(quantityField.getText());
+                    String brand = brandField.getText();
+                    String expiryDate = expiryDateField.getText();
+
+                    if (name.trim().isEmpty() || categoryName.trim().isEmpty() || brand.trim().isEmpty() || expiryDate.trim().isEmpty() || price <= 0 || quantity < 0) {
+                        JOptionPane.showMessageDialog(panel, "Please fill in all fields with valid values.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    // Find or create category
+                    Category category = categories.stream()
+                                                  .filter(c -> c.getName().equalsIgnoreCase(categoryName))
+                                                  .findFirst()
+                                                  .orElseGet(() -> {
+                                                      Category newCat = new Category(categoryName);
+                                                      categories.add(newCat);
+                                                      return newCat;
+                                                  });
+
+                    Product newProduct = new Product(name, price, quantity, category, brand, expiryDate);
+                    inventory.addProduct(newProduct);
+                    inventory.saveProductsToFile();
+
+                    // Add to table model
+                    Object[] row = {
+                        newProduct.getName(),
+                        String.format("%.2f", newProduct.getPrice()),
+                        newProduct.getCategory().getName(),
+                        newProduct.getQuantity(),
+                        newProduct.getBrand(),
+                        newProduct.getExpiryDate()
+                    };
+                    tableModel.addRow(row);
+
+                    JOptionPane.showMessageDialog(panel, "Product added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(panel, "Invalid price or quantity. Please enter valid numbers.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+        buttonPanel.add(addButton);
 
         JButton restockButton = new JButton("Restock Product");
         restockButton.addActionListener(e -> {
