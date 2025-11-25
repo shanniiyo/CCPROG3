@@ -8,8 +8,8 @@ import java.util.ArrayList;
  * 
  * @author Alfonzo Regaspi
  * @version 2.0
+ * @date November 25, 2025 - removed display methods, changed addItem/removeItem/getTotalItems
  */
-
 public class Cart {
     private ArrayList<Product> items;
     private ArrayList<Integer> quantities;
@@ -19,57 +19,67 @@ public class Cart {
         quantities = new ArrayList<>();
     }
 
- /**
- * Adds a product to the cart if sufficient stock is available.
- * 
- * @param product  the product to add
- * @param quantity the quantity to be added
- */
+    
+     // Adds a product to the cart
     public void addItem(Product product, int quantity) {
-        if (product.getQuantity() >= quantity) {
-            items.add(product);
-            quantities.add(quantity);
-            System.out.println(quantity + " x " + product.getName() + " added to cart.");
-        } else {
-            System.out.println("Insufficient stock for " + product.getName());
+        for (int i = 0; i < items.size(); i++) {
+            if (items.get(i).getName().equalsIgnoreCase(product.getName())) {
+                quantities.set(i, quantities.get(i) + quantity);
+                return;
+            }
+        }
+        items.add(product);
+        quantities.add(quantity);
+    }
+
+    public void removeItem(String productName) {
+        for (int i = 0; i < items.size(); i++) {
+            if (items.get(i).getName().equalsIgnoreCase(productName)) {
+                items.remove(i);
+                quantities.remove(i);
+                return;
+            }
         }
     }
 
-    public double computeSubtotal() {
-        double total = 0;
+    public void updateQuantity(String productName, int newQty) {
         for (int i = 0; i < items.size(); i++) {
-            total += items.get(i).getPrice() * quantities.get(i);
+            if (items.get(i).getName().equalsIgnoreCase(productName)) {
+                quantities.set(i, newQty);
+                return;
+            }
+        }
+    }
+
+    
+     //Computes subtotal of the cart.
+  
+    public double computeSubtotal() {
+        double subtotal = 0;   // FIXED
+        for (int i = 0; i < items.size(); i++) {
+            subtotal += items.get(i).getPrice() * quantities.get(i);
+        }
+        return subtotal;
+    }
+
+    public int getTotalItems() {
+        int total = 0;
+        for (int qty : quantities) {
+            total += qty;
         }
         return total;
     }
 
-    public void displayCart() {
-        System.out.println("\n--- Cart Items ---");
-        for (int i = 0; i < items.size(); i++) {
-            Product p = items.get(i);
-            System.out.printf("%d x %s - ₱%.2f each%n", quantities.get(i), p.getName(), p.getPrice());
-        }
-        System.out.printf("Subtotal: ₱%.2f%n", computeSubtotal());
+    public ArrayList<Product> getItems() {
+        return items;
     }
 
-    // reduce products
-    public void finalizePurchase() {
-        for (int i = 0; i < items.size(); i++) {
-            Product product = items.get(i);
-            int quantity = quantities.get(i);
-            product.reduceStock(quantity);
-        }
-    }
-
-    public int getTotalItems() { return items.size(); }
-
-    // Getters for Receipt - Shan
-    public ArrayList<Product> getItems()
-    { 
-        return items; 
-    }
-    public ArrayList<Integer> getQuantities() 
-    { 
+    public ArrayList<Integer> getQuantities() {
         return quantities;
+    }
+
+    public void clear() {
+        items.clear();
+        quantities.clear();
     }
 }

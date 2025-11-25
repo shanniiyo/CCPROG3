@@ -1,7 +1,10 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-
+/*import model.Inventory;
+import model.Cart;
+import model.Product;
+*/
 public class ProductCatalogPanel extends JPanel {
 
     private MainFrame frame;
@@ -18,23 +21,27 @@ public class ProductCatalogPanel extends JPanel {
 
         setLayout(new BorderLayout());
 
-        // Top: Search bar
+        
+        // Top Search Bar
         JPanel top = new JPanel(new BorderLayout());
         searchField = new JTextField();
         JButton searchBtn = new JButton("Search");
 
         searchBtn.addActionListener(e -> refreshTable());
+
         top.add(searchField, BorderLayout.CENTER);
         top.add(searchBtn, BorderLayout.EAST);
 
         add(top, BorderLayout.NORTH);
 
+  
         // Table
         table = new JTable();
         refreshTable();
         add(new JScrollPane(table), BorderLayout.CENTER);
 
-        // Bottom: Buttons
+
+        // Bottom Buttons
         JPanel bottom = new JPanel();
 
         JButton addBtn = new JButton("Add to Cart");
@@ -52,7 +59,9 @@ public class ProductCatalogPanel extends JPanel {
         add(bottom, BorderLayout.SOUTH);
     }
 
-    private void refreshTable() {
+    // Refresh table content
+    public void refreshTable() {
+
         String search = searchField.getText().trim().toLowerCase();
 
         DefaultTableModel model = new DefaultTableModel(
@@ -60,7 +69,10 @@ public class ProductCatalogPanel extends JPanel {
         );
 
         for (Product p : inventory.getProducts()) {
-            if (search.isEmpty() || p.getName().toLowerCase().contains(search)) {
+
+            if (search.isEmpty() ||
+                p.getName().toLowerCase().contains(search)) {
+
                 model.addRow(new Object[]{
                         p.getName(),
                         p.getPrice(),
@@ -80,7 +92,9 @@ public class ProductCatalogPanel extends JPanel {
         }
 
         String name = table.getValueAt(row, 0).toString();
+
         String qtyStr = JOptionPane.showInputDialog("Enter quantity:");
+        if (qtyStr == null) return;
 
         try {
             int qty = Integer.parseInt(qtyStr);
@@ -88,15 +102,19 @@ public class ProductCatalogPanel extends JPanel {
             Product p = inventory.findProductByName(name).orElse(null);
             if (p == null) return;
 
+            if (qty <= 0) {
+                JOptionPane.showMessageDialog(this, "Quantity must be positive.");
+                return;
+            }
+
             if (p.getQuantity() < qty) {
-                JOptionPane.showMessageDialog(this, "Not enough stock.");
+                JOptionPane.showMessageDialog(this, "Insufficient stock.");
                 return;
             }
 
             cart.addItem(p, qty);
             JOptionPane.showMessageDialog(this, "Added to cart!");
-
-            refreshTable(); // update view after change
+            refreshTable();
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Invalid quantity.");
