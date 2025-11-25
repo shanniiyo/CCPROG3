@@ -55,13 +55,18 @@ public class ProductCatalogPanel extends JPanel {
         String search = searchField.getText().trim().toLowerCase();
 
         DefaultTableModel model = new DefaultTableModel(
-                new String[]{"Name", "Price", "Stock"}, 0
+                new String[]{"Name", "Price", "Category", "Stock", "Brand", "Expiry Date"}, 0
         );
 
         for (Product p : inventory.getProducts()) {
             if (search.isEmpty() || p.getName().toLowerCase().contains(search)) {
                 model.addRow(new Object[]{
-                        p.getName(), p.getPrice(), p.getQuantity()
+                        p.getName(),
+                        String.format("%.2f", p.getPrice()),
+                        p.getCategory().getName(),
+                        p.getQuantity(),
+                        p.getBrand(),
+                        p.getExpiryDate()
                 });
             }
         }

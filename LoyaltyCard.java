@@ -49,8 +49,6 @@ public class LoyaltyCard {
 
    /**
     * Loads loyalty cards from a file into a Map for easy lookup.
-    * @param filePath The path to the loyalty cards file.
-    * @return A map where the key is the card number and the value is the LoyaltyCard object.
     */
    public static Map<String, LoyaltyCard> loadLoyaltyCards(String filePath) {
        List<LoyaltyCard> cards = new ArrayList<>();
@@ -73,8 +71,6 @@ public class LoyaltyCard {
 
    /**
     * Saves the state of all loyalty cards back to the file.
-    * @param filePath The path to the loyalty cards file.
-    * @param cards A map of all loyalty cards to save.
     */
    public static void saveLoyaltyCards(String filePath, Map<String, LoyaltyCard> cards) {
        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {

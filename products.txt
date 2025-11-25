@@ -2,7 +2,7 @@ Sandwich,55.0,10,Food,Chef’s Choice,2025-10-30
 Ensaymada,35.0,10,Food,Red Ribbon,2025-09-15
 Fried Chicken,89.0,10,Food,Chef's Choice,2025-10-05
 Peanut Butter cups,45.0,10,Food,Reeses,2025-09-20
-Chips,125.0,1,Food,Lays,2025-08-15
+Chips,125.0,10,Food,Lays,2025-08-15
 Water Bottle,25.0,10,Drinks,Nature’s Spring,2026-12-31
 Iced Coffee,65.0,10,Drinks,Great Taste,2026-11-10
 Soda,30.0,10,Drinks,Coca-Cola,2026-01-20

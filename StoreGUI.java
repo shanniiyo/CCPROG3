@@ -25,7 +25,7 @@ public class StoreGUI extends JFrame {
 
     public StoreGUI() {
         // 1. Load Data
-         categories = new ArrayList<>(); // You might want to load these from a file too
+         categories = new ArrayList<>(); 
         inventory = new Inventory("products.txt", categories);
         loyaltyCards = LoyaltyCard.loadLoyaltyCards("loyalty_cards.txt");
         if (loyaltyCards == null) 
@@ -44,24 +44,20 @@ public class StoreGUI extends JFrame {
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
 
-        // 4. Create the different panels for your application
+        // 4. Create the different panels 
         JPanel mainMenuPanel = createMainMenuPanel();
-        JPanel inventoryPanel = createInventoryPanel(); // Create the new panel
-        // JPanel transactionPanel = createTransactionPanel();
+        JPanel inventoryPanel = createInventoryPanel(); // Create new panel
 
         //Transaction Panels
         cart = new Cart();
         catalogPanel = new ProductCatalogPanel(this, inventory, cart);
         cartPanel = new ShoppingCartPanel(this, inventory, cart);
-        checkoutPanel = new CheckoutPanel(this, inventory, cart);
+        checkoutPanel = new CheckoutPanel(this, inventory, cart, loyaltyCards);
 
 
         // 5. Add panels to the main container
         mainPanel.add(mainMenuPanel, "MainMenu");
         mainPanel.add(inventoryPanel, "Inventory"); // Add it to the CardLayout
-        // mainPanel.add(transactionPanel, "Transaction");
-
-        //Transaction Panels to GUI
         mainPanel.add(catalogPanel, "Catalog");
         mainPanel.add(cartPanel, "Cart");
         mainPanel.add(checkoutPanel, "Checkout");
@@ -94,7 +90,7 @@ public class StoreGUI extends JFrame {
 
         JButton inventoryButton = new JButton("Inventory Management");
         inventoryButton.addActionListener(e -> {
-            // Switch to the Inventory panel instead of showing a dialog
+            // Switch to the Inventory panel 
             cardLayout.show(mainPanel, "Inventory");
         });
         gbc.gridy = 1;
@@ -102,7 +98,6 @@ public class StoreGUI extends JFrame {
 
         JButton transactionButton = new JButton("Customer Transaction");
         transactionButton.addActionListener(e -> {
-            // This will eventually switch to the transaction panel
             //Open Transaction Process Here
             cardLayout.show(mainPanel, "Catalog");
             catalogPanel.refreshTable();
@@ -161,7 +156,7 @@ public class StoreGUI extends JFrame {
 
         JButton addButton = new JButton("Add New Product");
         addButton.addActionListener(e -> {
-            // Create a panel for the dialog with fields for the new product
+            // Create a panel  the fields for the new product
             JPanel addProductPanel = new JPanel(new GridLayout(0, 2, 5, 5));
             JTextField nameField = new JTextField();
             JTextField priceField = new JTextField();
@@ -241,7 +236,6 @@ public class StoreGUI extends JFrame {
                 return;
             }
 
-            // The view row might not match the model row if sorted
             int modelRow = productTable.convertRowIndexToModel(selectedRow);
             String productName = (String) tableModel.getValueAt(modelRow, 0);
 
@@ -254,10 +248,10 @@ public class StoreGUI extends JFrame {
                         return;
                     }
 
-                    // Restock in the inventory object
+                    // Restock in the inventory 
                     inventory.restockProduct(productName, quantity);
 
-                    // Update the table model
+                    // Update the table 
                     int currentStock = (int) tableModel.getValueAt(modelRow, 3);
                     tableModel.setValueAt(currentStock + quantity, modelRow, 3);
 

@@ -9,6 +9,30 @@ public class Transaction {
     private double change;
     private Receipt receipt;
 
+    public double getTotalAmount() {
+        return totalAmount;
+    }
+
+    public double getSubtotal() {
+        return subtotal;
+    }
+
+    public double getSeniorDiscount() {
+        return seniorDiscount;
+    }
+
+    public double getLoyaltyDiscount() {
+        return loyaltyDiscount;
+    }
+
+    public double getVat() {
+        return vat;
+    }
+
+    public double getChange() {
+        return change;
+    }
+
     public Transaction(Customer customer, Cart cart) {
         this.customer = customer;
         this.cart = cart;
@@ -16,15 +40,15 @@ public class Transaction {
     }
 
     public void processTransaction() {
-        this.subtotal = cart.computeSubtotal(); // This subtotal is VAT-exclusive.
+        this.subtotal = cart.computeSubtotal(); // This subtotal is VAT-exclusive
         
         if (customer.isSenior()) {
-            // For seniors, discount is on the VAT-exclusive price, and the transaction is VAT-exempt.
+            // For seniors, discount is on the VAT exclusive price, and the transaction is VATexempt
             this.seniorDiscount = Discount.computeSeniorDiscount(this.subtotal);
             this.vat = 0; // Seniors are VAT-exempt
             this.totalAmount = this.subtotal - this.seniorDiscount;
         } else {
-            // For non-seniors, add VAT.
+            // For non seniors, add VAT
             this.seniorDiscount = 0;
             this.vat = Discount.computeVAT(this.subtotal);
             this.totalAmount = this.subtotal + this.vat;
@@ -64,9 +88,5 @@ public class Transaction {
         change = paymentAmount - totalAmount;
         this.receipt = new Receipt(customer, cart, paymentAmount, totalAmount, change, subtotal, vat, seniorDiscount, loyaltyDiscount);
         return this.receipt;
-    }
-
-    public double getTotalAmount() {
-        return totalAmount;
     }
 }

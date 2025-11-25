@@ -3,6 +3,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 /**
  * Receipt.java
@@ -24,6 +25,10 @@ public class Receipt {
     private double loyaltyDiscount;
     private LocalDateTime transactionDate;
     private String fileName;
+
+    public String getFileName() { return fileName; }
+    
+    public Customer getCustomer() { return customer; }
 
     public Receipt(Customer customer, Cart cart, double paymentAmount, double totalAmount,
                    double change, double subtotal, double vat,
@@ -89,9 +94,5 @@ public class Receipt {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public String getFileName() {
-        return fileName;
     }
 }
