@@ -1,0 +1,14 @@
+--- OFFICIAL RECEIPT ---
+Date: 2025/11/25 23:17:55
+Customer: shan
+
+Item                   Qty      Price      Total
+
+Subtotal:                                50.00
+Senior Discount:                        -10.00
+----------------------------------------
+TOTAL:                                   40.00
+Paid:                                    40.00
+Change:                                   0.00
+----------------------------------------
+Thank you for your purchase!

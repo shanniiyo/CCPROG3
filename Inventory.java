@@ -3,6 +3,19 @@ import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Inventory.java
+ * Manages the collection of all products available in the store.
+ * This class is responsible for loading product data from a file,
+ * storing them in a list, and providing methods to access, search,
+ * and manage the products. It acts as the central repository for all
+ * items that can be sold.
+ *
+ * @author Shan Dipatuan + Alfonzo Regaspi
+ * @version 3.0
+ */
+
+
 public class Inventory {
     private List<Product> products;
     private String productsFilePath;

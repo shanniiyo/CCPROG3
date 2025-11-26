@@ -1,3 +1,5 @@
+
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -10,8 +12,15 @@ import java.util.stream.Collectors;
 
 /**
  * LoyaltyCard.java
- * Represents a membership card that allows point accumulation and redemption.
-*/
+ * Represents a customer's loyalty card in the store.
+ * This class stores the card number and the points accumulated by the customer.
+ * It includes functionality to add points and a static method to load all
+ * loyalty cards from a data file.
+ *
+ * @author Alfonzo Regaspi + Shan Dipatuan
+ * @version 1.0
+ */
+
 public class LoyaltyCard {
    private String cardNumber;
    private int points;
@@ -49,8 +58,6 @@ public class LoyaltyCard {
 
    /**
     * Loads loyalty cards from a file into a Map for easy lookup.
-    * @param filePath The path to the loyalty cards file.
-    * @return A map where the key is the card number and the value is the LoyaltyCard object.
     */
    public static Map<String, LoyaltyCard> loadLoyaltyCards(String filePath) {
        List<LoyaltyCard> cards = new ArrayList<>();
@@ -73,8 +80,6 @@ public class LoyaltyCard {
 
    /**
     * Saves the state of all loyalty cards back to the file.
-    * @param filePath The path to the loyalty cards file.
-    * @param cards A map of all loyalty cards to save.
     */
    public static void saveLoyaltyCards(String filePath, Map<String, LoyaltyCard> cards) {
        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
