@@ -1,3 +1,13 @@
+/**
+ * Product.java
+ * Represents a single item available for sale in the convenience store.
+ * It encapsulates all details of a product, including its name, price,
+ * quantity in stock, category, brand, and expiry date.
+ *
+ * @author Shan Dipatuan + Alfonzo Regaspi
+ * @version 1.0
+ */
+
 public class Product {
     private String name;
     private double price;

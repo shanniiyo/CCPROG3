@@ -1,7 +1,10 @@
 /**
  * Customer.java
  * Represents a customer in the convenience store.
- * @author Alfonzo Regaspi 
+ * This class stores the customer's name, senior citizen status, and an optional loyalty card.
+ * This information is used to calculate applicable discounts during a transaction.
+ *
+ * @author Alfonzo Regaspi
  * @version 1.0
  */
 public class Customer {
@@ -32,4 +35,3 @@ public class Customer {
     }
 }
 
-//SAFE
